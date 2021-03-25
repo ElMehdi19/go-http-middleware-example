@@ -4,17 +4,20 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func logger(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Request received")
 		/*
-			any code written here will be executed before
-			passing the request object to the next middleware
+			log format: HTTP_METHOD /PATH REMOTE_ADDRESS
+			example: GET /home 127.0.0.1
 		*/
+		method := r.Method
+		path := r.URL.Path
+		remoteAddr := strings.Split(r.RemoteAddr, ":")[0]
+		log.Printf("%s %s %s\n", method, path, remoteAddr)
 		next.ServeHTTP(w, r)
-		log.Println("Response sent")
 	}
 }
 
